@@ -461,30 +461,34 @@ function Lobby() {
       <section className="players-section">
         <h2>Players</h2>
         <div className="players-grid">
-          {players.map((player) => (
-            <div key={player.playerId} className={`player-card ${player.isReady ? 'ready' : ''}`}>
-              <div className="player-avatar" style={{
-                background: `linear-gradient(135deg, ${player.isHost ? 'var(--primary-orange)' : '#6B6B6B'}, ${player.isHost ? '#DB3B14' : '#4A4A4A'})`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontWeight: '700',
-                fontSize: '1.2rem',
-              }}>
-                {player.username[0].toUpperCase()}
-              </div>
-              <div className="player-details">
-                <div className="player-name">
-                  {player.username}
-                  {player.isHost && <span style={{ marginLeft: '6px' }}>👑</span>}
+          {players.map((player) => {
+            const isMe = player.playerId === currentPlayer?.playerId;
+            return (
+              <div key={player.playerId} className={`player-card ${player.isReady ? 'ready' : ''}`}>
+                <div className="player-avatar" style={{
+                  background: `linear-gradient(135deg, ${player.isHost ? 'var(--primary-orange)' : '#6B6B6B'}, ${player.isHost ? '#DB3B14' : '#4A4A4A'})`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontWeight: '700',
+                  fontSize: '1.2rem',
+                }}>
+                  {player.username[0].toUpperCase()}
                 </div>
-                <div className="player-status-badge">
-                  {player.isReady ? '● Ready' : '○ Not Ready'}
+                <div className="player-details">
+                  <div className="player-name">
+                    {player.isHost ? 'Host' : player.username}
+                    {player.isHost && <span style={{ marginLeft: '6px' }}>👑</span>}
+                    {!player.isHost && isMe && <span style={{ marginLeft: '6px', fontSize: '0.75rem', color: 'var(--primary-orange)', fontWeight: '600' }}>(You)</span>}
+                  </div>
+                  <div className="player-status-badge">
+                    {player.isReady ? '● Ready' : '○ Not Ready'}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Empty slots */}
           {game && [...Array(Math.max(0, game.maxPlayers - players.length))].map((_, i) => (

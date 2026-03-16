@@ -49,7 +49,7 @@ const mockResults = [
 function Results() {
   const { gameId } = useParams();
   const navigate = useNavigate();
-  const { results, setResults, resetGame, isSinglePlayer } = useGameStore();
+  const { results, setResults, resetGame, isSinglePlayer, currentPlayer } = useGameStore();
   const [isLoading, setIsLoadingLocal] = useState(true);
   const [expandedItems, setExpandedItems] = useState({}); // outfitId → true means show items dropdown
   const confettiRef = useRef(null);
@@ -161,6 +161,8 @@ function Results() {
           const emoji = index === 0 ? '👑' : index === 1 ? '🥈' : '🥉';
           const isExpanded = expandedItems[result.outfitId];
 
+          const isMe = result.playerId === currentPlayer?.playerId;
+
           return (
             <div key={result.outfitId} className={`podium-place ${placeClass}`}>
               {/* Main Image — AI generated or product grid fallback */}
@@ -220,7 +222,10 @@ function Results() {
               <div className="podium-rank">{emoji}</div>
 
               {/* Player Info */}
-              <div className="podium-player-name">{result.username}</div>
+              <div className="podium-player-name">
+                {result.username}
+                {isMe && <span style={{ marginLeft: '6px', fontSize: '0.7em', color: 'var(--primary-orange)', fontWeight: '600' }}>(You)</span>}
+              </div>
               <div className="podium-score">
                 <span className="star">★</span>
                 <span>{result.score.toFixed(1)}</span>
@@ -241,6 +246,7 @@ function Results() {
           <h3>Other Submissions</h3>
           {restOfResults.map((result) => {
             const isExpanded = expandedItems[result.outfitId];
+            const isMe = result.playerId === currentPlayer?.playerId;
             return (
               <div key={result.outfitId} className="result-item-wrapper">
                 <div className="result-item">
@@ -260,7 +266,10 @@ function Results() {
                     )}
                   </div>
                   <div className="result-info">
-                    <div className="result-player-name">{result.username}</div>
+                    <div className="result-player-name">
+                      {result.username}
+                      {isMe && <span style={{ marginLeft: '6px', fontSize: '0.75em', color: 'var(--primary-orange)', fontWeight: '600' }}>(You)</span>}
+                    </div>
                     <div className="result-item-count">{result.products.length} items</div>
                   </div>
                   <div className="result-score">
